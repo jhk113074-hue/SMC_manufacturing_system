@@ -164,6 +164,10 @@ export interface SheetLot {
 }
 
 export interface Settings {
+  companyName: string
+  companyLogo: string // Data URL (base64/svg) for offline & single-file compatibility
+  ocrProvider: 'gemini' | 'openai'
+  ocrApiKey: string // Vision API key for scanning handwritten production logs
   siteCode: string
   storageTempMaxC: number
   fillerTempMaxC: number

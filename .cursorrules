@@ -1,0 +1,8 @@
+Always read `AGENTS.md` and `CHANGELOG.md` before making changes to this project.
+
+Mandatory workflow after any code or UI modification:
+1. Run `npm test` to verify all unit tests in `src/engine/calc.test.ts` pass.
+2. Run `npm run build` and copy `dist/index.html` to `SMC_system.html` so the standalone single-file build stays synchronized.
+3. Document your changes in `CHANGELOG.md` (date, summary, modified files, rationale).
+4. Commit the changes to Git with a clear commit message (`feat:`, `style:`, `fix:`, `refactor:`, `docs:`).
+5. Preserve all domain comments, print styles (`@media print`, `.printable`, `.label`), and Korean UI consistency.

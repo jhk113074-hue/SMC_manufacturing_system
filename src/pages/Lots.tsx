@@ -20,7 +20,12 @@ export default function Lots() {
 
   const Label = ({ l }: { l: SheetLot }) => (
     <div className="label">
-      <div className="t">PRODUCT LABEL</div>
+      <div className="t" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+        {db.settings.companyLogo && (
+          <img src={db.settings.companyLogo} alt="logo" style={{ height: 22, maxWidth: 80, objectFit: 'contain' }} />
+        )}
+        <span>PRODUCT LABEL</span>
+      </div>
       <div className="lr" style={{ gridTemplateColumns: '1.3fr 1fr 1fr' }}>
         <div><small>품명 PRODUCT NAME</small><b>{l.productCode}</b></div>
         <div><small>생산일자 DATE</small>{dateOnly(l.producedAt)}</div>
@@ -35,7 +40,7 @@ export default function Lots() {
         <div><small>실 중량 NET WEIGHT (Kg)</small>{fmt(l.netKg, 0)}</div>
       </div>
       <div style={{ padding: '6px 8px', fontSize: 11 }}>
-        <small>특이사항 REMARKS</small>
+        <small>특이사항 REMARKS · {db.settings.companyName}</small>
         직사광선 금지 Keep out of direct sunlight<br />냉암소 보관 Store in a cool, dark place (Max. 25°C)
       </div>
     </div>

@@ -7,7 +7,19 @@ const KEY = 'smc-db-v1'
 function load(): DB {
   try {
     const raw = localStorage.getItem(KEY)
-    if (raw) return { ...seedDB(), ...JSON.parse(raw) }
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      const s = seedDB()
+      const pIds = new Set((parsed.products ?? []).map((x: { id: string }) => x.id))
+      const rIds = new Set((parsed.recipes ?? []).map((x: { id: string }) => x.id))
+      return {
+        ...s,
+        ...parsed,
+        products: [...(parsed.products ?? []), ...s.products.filter((x) => !pIds.has(x.id))],
+        recipes: [...(parsed.recipes ?? []), ...s.recipes.filter((x) => !rIds.has(x.id))],
+        settings: { ...s.settings, ...(parsed.settings ?? {}) },
+      }
+    }
   } catch {
     /* 저장소를 못 쓰면 메모리로만 동작 */
   }
@@ -63,7 +75,8 @@ export function exportJSON(): string {
 export function importJSON(text: string) {
   const d = JSON.parse(text)
   if (!d || !Array.isArray(d.materials) || !Array.isArray(d.recipes)) throw new Error('올바른 백업 파일이 아닙니다.')
-  update(() => ({ ...seedDB(), ...d }), { action: '백업 복원', detail: '백업 파일에서 복원' })
+  const s = seedDB()
+  update(() => ({ ...s, ...d, settings: { ...s.settings, ...(d.settings ?? {}) } }), { action: '백업 복원', detail: '백업 파일에서 복원' })
 }
 
 export function resetDB() {

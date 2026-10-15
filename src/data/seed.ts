@@ -31,17 +31,25 @@ const L = (
 
 export const SEED_PRODUCTS: Product[] = [
   { id: 'p-tank', code: 'SMCSHEETWTR33', name: 'SMC 물탱크용', arealKgM2: 4.6, widthMm: 1100, note: '생산일지·라벨 기준(GF 33%)' },
+  { id: 'p-manhole', code: 'SMCMANHOLE-C250', name: 'SMC 맨홀 C250 (MANHOLE)', arealKgM2: 4.74, widthMm: 930, note: '하영 SMC-1.xlsx SMC_Calculation (TEST) 기준 (GF 32%)' },
+  { id: 'p-gen40', code: 'SMCSHEET-GEN40', name: 'SMC 일반성형용 (GF 40% / 32.5%)', arealKgM2: 4.0, widthMm: 1000, note: 'Doctor Blade Flow Rate Calculator 기준' },
 ]
 
 const now = new Date().toISOString()
 const base = { version: 1, status: 'draft' as const, createdAt: now, reason: '엑셀(물탱크 배합)에서 이관. 현행 승인 처방 확정 전' }
+const baseCalc = { version: 1, status: 'draft' as const, createdAt: now, reason: '엑셀(SMC_Calculation / Doctor Blade 계산기)에서 이관' }
 
-// 원본: 물탱크 배합 시트 4개 처방(물탱크 / 물탱크2 / YSACC1 / YSACC2)
+// 원본: 물탱크 배합 시트 5개 처방(물탱크 / 물탱크2 / YSACC1 / YSACC2 / 물탱크 7배치 AL열) + SMC_Calculation 4개 처방
 export const SEED_RECIPES: Recipe[] = [
   { ...base, id: 'r-tank-1', productId: 'p-tank', family: '물탱크', lines: L(70, 30, 7.5, 1, 1, 1.5, 1.2, 1.5, 5, 5, 170, 1.5, 4, 148) },
   { ...base, id: 'r-tank-2', productId: 'p-tank', family: '물탱크2', lines: L(70, 30, 7.5, 1, 1, 1.7, 1.2, 1, 5, 5, 170, 2.2, 3.5, 126) },
   { ...base, id: 'r-ysacc-1', productId: 'p-tank', family: 'YSACC1', lines: L(65, 35, 7, 1.2, 0, 0.4, 1.2, 0, 4, 4, 185, 1.2, 1.1, 132) },
   { ...base, id: 'r-ysacc-2', productId: 'p-tank', family: 'YSACC2', lines: L(66, 20, 15.12, 0.4, 0, 1.3, 1, 0, 5.75, 6.5, 185, 3.8, 1.1, 132) },
+  { ...base, id: 'r-tank-al', productId: 'p-tank', family: '물탱크 (AL열 7배치)', lines: L(70, 30, 1.114, 0.5, 1.5, 0.243, 0.143, 0.214, 0.714, 0.929, 26.429, 2.68, 2.5, 18.857) },
+  { ...baseCalc, id: 'r-manhole-1', productId: 'p-manhole', family: 'MANHOLE C250 (TEST)', lines: L(70, 30, 6.545, 0.4, 0, 0.309, 1.509, 0, 0, 5.091, 210, 3.018, 9.091, 158.101) },
+  { ...baseCalc, id: 'r-calc-40t1', productId: 'p-gen40', family: 'SMC 40%-T1', lines: L(65, 35, 7, 1, 1, 0.4, 1.2, 0, 4, 4, 100, 2.3, 4, 149.933) },
+  { ...baseCalc, id: 'r-calc-40o', productId: 'p-gen40', family: 'SMC 40%-O', lines: L(65, 35, 7, 1, 1, 0.4, 1.2, 0, 4, 4, 125, 2.2, 4, 166.533) },
+  { ...baseCalc, id: 'r-calc-325', productId: 'p-gen40', family: 'SMC 32.5%', lines: L(75.676, 24.324, 12.432, 1.081, 1.081, 1.622, 1.189, 1.081, 5.405, 6.054, 183.784, 2.227, 2.703, 153.429) },
 ]
 
 export const SEED_MACHINE: MachineProfile = {
@@ -59,6 +67,10 @@ export const SEED_MACHINE: MachineProfile = {
 // 원본: 공정 표준서, 시트 관리 수칙, 기계 관리 가이드
 // 보관 온도(30 vs 40℃)는 원본이 상충하므로 엄격한 쪽(30)을 임시값으로 둠 — 결정 필요
 export const SEED_SETTINGS: Settings = {
+  companyName: 'SMC 기술·생산관리',
+  companyLogo: '',
+  ocrProvider: 'gemini',
+  ocrApiKey: '',
   siteCode: 'HYVN',
   storageTempMaxC: 30,
   fillerTempMaxC: 45,

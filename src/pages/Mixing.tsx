@@ -99,17 +99,23 @@ export default function Mixing() {
         return (
           <section className="card printable">
             <header>
-              <h3>배합 생산 지시서 {order.no}</h3>
+              <div className="row" style={{ gap: 10 }}>
+                {db.settings.companyLogo && <img src={db.settings.companyLogo} alt="logo" style={{ height: 32, maxWidth: 110, objectFit: 'contain' }} />}
+                <div>
+                  <h3>배합 생산 지시서 {order.no}</h3>
+                  <small className="mute">{db.settings.companyName}</small>
+                </div>
+              </div>
               <div className="row noprint">
-                <button className="btn" onClick={() => window.print()}>인쇄</button>
+                <button className="btn pri" onClick={() => window.print()}>🖨️ 지시서 인쇄</button>
                 <button className="btn" onClick={() => setOpenId('')}>닫기</button>
               </div>
             </header>
             <div className="grid g4" style={{ marginBottom: 8 }}>
-              <div><span className="mute">품명</span><br />{db.products.find((p) => p.id === r?.productId)?.name}</div>
-              <div><span className="mute">처방</span><br />{r ? recipeName(r) : '-'} {r?.status === 'draft' && <Badge kind="warn">미승인</Badge>}</div>
-              <div><span className="mute">작업일 / 배치</span><br />{order.date} / {order.batches} 배치</div>
-              <div><span className="mute">필요 유리섬유(참고)</span><br />{fmt(glassKg(order), 1)} kg</div>
+              <div><span className="mute">품명</span><br /><b>{db.products.find((p) => p.id === r?.productId)?.name}</b></div>
+              <div><span className="mute">처방</span><br /><b>{r ? recipeName(r) : '-'}</b> {r?.status === 'draft' && <Badge kind="warn">미승인</Badge>}</div>
+              <div><span className="mute">작업일 / 배치</span><br /><b>{order.date} / {order.batches} 배치</b></div>
+              <div><span className="mute">필요 유리섬유(참고)</span><br /><b>{fmt(glassKg(order), 1)} kg</b></div>
             </div>
             {MIX_STEPS.map((st) => {
               const ls = order.lines.filter((l) => st.cats.includes(matOf(db, l.materialId)?.cat as MatCat))
