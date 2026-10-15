@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { update, useDB } from './store'
 import { ENGINE_VERSION } from './engine/calc'
+import { translateText, useDomTranslator, useLang } from './i18n'
 import Dashboard from './pages/Dashboard'
 import Materials from './pages/Materials'
 import Recipes from './pages/Recipes'
@@ -190,6 +191,8 @@ const GROUP_LABELS: Record<PageItem['group'], string> = {
 
 export default function App() {
   const db = useDB()
+  const [lang, setLang] = useLang()
+  const appRef = useRef<HTMLDivElement>(null)
   const logoInputRef = useRef<HTMLInputElement>(null)
   const [page, setPage] = useState<string>(() => location.hash.slice(1) || 'dash')
   useEffect(() => {
@@ -202,27 +205,30 @@ export default function App() {
   }, [])
   useEffect(() => { location.hash = page }, [page])
 
+  useDomTranslator(appRef, lang, page)
+
   const cur = PAGES.find((p) => p.id === page) ?? PAGES[0]
   const C = cur.C
   const hasUser = db.user.trim().length > 0
+  const tx = (s: string) => (lang === 'en' ? translateText(s) : s)
 
   return (
-    <div className="app">
+    <div className="app" ref={appRef}>
       <nav className="side">
         <div
           className="brand"
           onClick={() => logoInputRef.current?.click()}
-          title="클릭하여 회사 로고 이미지를 등록하거나 변경합니다"
+          title={tx('클릭하여 회사 로고 이미지를 등록하거나 변경합니다')}
           style={{ cursor: 'pointer' }}
         >
           {db.settings.companyLogo ? (
-            <img src={db.settings.companyLogo} alt="회사 로고" className="brand-logo-img" />
+            <img src={db.settings.companyLogo} alt="Logo" className="brand-logo-img" />
           ) : (
             <div className="brand-mark">SMC</div>
           )}
           <div className="brand-text">
-            <h1>{db.settings.companyName || 'SMC 기술·생산관리'}</h1>
-            <span>{db.settings.companyLogo ? '로고 클릭 시 변경' : '+ 클릭하여 회사 로고 등록'}</span>
+            <h1>{tx(db.settings.companyName || 'SMC 기술·생산관리')}</h1>
+            <span>{tx(db.settings.companyLogo ? '로고 클릭 시 변경' : '+ 클릭하여 회사 로고 등록')}</span>
           </div>
           <input
             ref={logoInputRef}
@@ -246,7 +252,7 @@ export default function App() {
         <div className="nav-scroll">
           {(['overview', 'process', 'docs', 'system'] as const).map((grp) => (
             <div key={grp} className="nav-group">
-              <div className="nav-label">{GROUP_LABELS[grp]}</div>
+              <div className="nav-label">{tx(GROUP_LABELS[grp])}</div>
               {PAGES.filter((p) => p.group === grp).map((p) => (
                 <button
                   key={p.id}
@@ -254,7 +260,7 @@ export default function App() {
                   onClick={() => setPage(p.id)}
                 >
                   <span className="nav-ico">{p.icon}</span>
-                  <span className="nav-name">{p.name}</span>
+                  <span className="nav-name">{tx(p.name)}</span>
                   {p.step && <span className="nav-step">{p.step}</span>}
                 </button>
               ))}
@@ -265,7 +271,7 @@ export default function App() {
         <div className="side-foot">
           <div className="side-foot-row">
             <span className="status-dot ok" />
-            <span> 로컬 DB 자동 저장 중</span>
+            <span> {tx('로컬 DB 자동 저장 중')}</span>
           </div>
           <div className="side-foot-meta">
             <span>{db.settings.siteCode} SITE</span>
@@ -278,19 +284,35 @@ export default function App() {
         <header className="top">
           <div className="top-title">
             <div className="top-crumb">
-              <span>{GROUP_LABELS[cur.group]}</span>
+              <span>{tx(GROUP_LABELS[cur.group])}</span>
               {cur.step && <span className="top-step">STEP {cur.step}</span>}
             </div>
-            <h2>{cur.name}</h2>
-            <p className="top-sub">{cur.sub}</p>
+            <h2>{tx(cur.name)}</h2>
+            <p className="top-sub">{tx(cur.sub)}</p>
           </div>
           <div className="top-actions">
+            <div className="seg-tabs" style={{ padding: 3, borderRadius: 999 }}>
+              <button
+                className={lang === 'ko' ? 'on' : ''}
+                style={{ borderRadius: 999, padding: '5px 12px', fontSize: 12 }}
+                onClick={() => setLang('ko')}
+              >
+                🇰🇷 한국어
+              </button>
+              <button
+                className={lang === 'en' ? 'on' : ''}
+                style={{ borderRadius: 999, padding: '5px 12px', fontSize: 12 }}
+                onClick={() => setLang('en')}
+              >
+                🇺🇸 English
+              </button>
+            </div>
             <div className={`user-pill ${hasUser ? 'active' : 'empty'}`}>
               <span className="user-dot" />
-              <span className="user-lbl">작업자</span>
+              <span className="user-lbl">{tx('작업자')}</span>
               <input
                 style={{ width: 120 }}
-                placeholder="성명 입력 (필수)"
+                placeholder={tx('성명 입력 (필수)')}
                 value={db.user}
                 onChange={(e) => update((d) => ({ ...d, user: e.target.value }))}
               />

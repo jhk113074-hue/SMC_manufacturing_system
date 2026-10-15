@@ -5,6 +5,19 @@
 
 ---
 
+## [v0.4.0] - 2026-10-15
+### Added — 글로벌 영문(English) 완벽 지원 및 GitHub Pages 자동 배포(CI/CD)
+- **한국어 / 영어 실시간 전환 (`src/i18n.ts`, `src/App.tsx`)**:
+  - 상단 헤더 우측에 **`🇰🇷 한국어` / `🇺🇸 English`** 원클릭 토글 스위치 탑재 (URL `?lang=en` 파라미터 및 로컬 스토리지 기억 지원)
+  - 전 메뉴, 대시보드, 9종 처방·원가계산서, 닥터블레이드 설정값 계산기, 배합지시서, 스마트스캔 생산일지, 로트·라벨, 공정표준서·매뉴얼, 관리양식함, 기준값 화면의 모든 기술 용어 및 문장 양방향 실시간 영문 변환 지원
+- **단독 실행 파일 국문/영문 2종 제공**:
+  - `SMC_system.html` (한국어 기본 실행본) 및 `SMC_system_EN.html` (영문 기본 실행본) 동시 빌드
+- **GitHub 원격 저장소 및 GitHub Pages 라이브 배포 (`.github/workflows/deploy.yml`)**:
+  - 저장소: `https://github.com/jhk113074-hue/SMC_manufacturing_system`
+  - 라이브 웹 서비스: `https://jhk113074-hue.github.io/SMC_manufacturing_system/`
+
+---
+
 ## [v0.3.0] - 2026-10-15
 ### Added — 엑셀 4개 파일 전 시트 100% 무손실 통합 (매뉴얼 / 작업일지·관리양식 / 처방·원가 / 설정값 계산 분리)
 - **매뉴얼 통합 (`src/pages/Standard.tsx` — `공정표준서·매뉴얼` 메뉴)**
